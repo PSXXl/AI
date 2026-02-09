@@ -1,14 +1,3 @@
-cat > ubuntu-server-setup.sh << 'EOF'
-#!/bin/bash
-# Автоматическая настройка WireGuard на Ubuntu 24.04
-# Сервер: 72.56.91.172
-
-set -e
-
-echo "=== Установка WireGuard на Ubuntu 24.04 ==="
-echo "Сервер: 72.56.91.172"
-echo ""
-
 # Обновление системы
 echo "[1/8] Обновление системы..."
 apt update && apt upgrade -y
@@ -58,7 +47,7 @@ CLIENT_PUBLIC_KEY=$(cat client_public.key)
 
 # Создание конфигурации WireGuard
 echo "[5/8] Создание конфигурации WireGuard..."
-cat > /etc/wireguard/wg0.conf <<EOC
+cat > /etc/wireguard/wg0.conf << WGCONF
 [Interface]
 Address = 10.200.200.1/24
 ListenPort = 51820
@@ -77,7 +66,7 @@ PostDown = iptables -t nat -D POSTROUTING -o $INTERFACE -j MASQUERADE
 PublicKey = $CLIENT_PUBLIC_KEY
 AllowedIPs = 10.200.200.2/32
 PersistentKeepalive = 25
-EOC
+WGCONF
 
 # Включение IP forwarding
 echo "[6/8] Включение IP forwarding..."
@@ -112,7 +101,4 @@ echo ""
 echo "Используйте Client Private Key для настройки MikroTik"
 echo "Используйте Server Public Key для добавления peer на MikroTik"
 echo ""
-EOF
-
-chmod +x ubuntu-server-setup.sh
-bash ubuntu-server-setup.sh
+ENDOF
