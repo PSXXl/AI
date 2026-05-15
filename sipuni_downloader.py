@@ -179,7 +179,8 @@ def main():
     )
     
     parser.add_argument('--user', required=True, help='Номер пользователя в системе Sipuni')
-    parser.add_argument('--secret', required=True, help='Секретный ключ API')
+    parser.add_argument('--secret', default=os.environ.get('SIPUNI_SECRET'), 
+                        help='Секретный ключ API (можно задать через переменную окружения SIPUNI_SECRET)')
     parser.add_argument('--output', required=True, help='Директория для сохранения записей')
     parser.add_argument('--from', dest='from_date', help='Дата начала периода (YYYY-MM-DD)')
     parser.add_argument('--to', dest='to_date', help='Дата окончания периода (YYYY-MM-DD)')
@@ -189,6 +190,16 @@ def main():
     parser.add_argument('--skip-existing', action='store_true', help='Пропускать уже скачанные файлы')
     
     args = parser.parse_args()
+    
+    # Проверка наличия secret
+    if not args.secret:
+        print("Ошибка: не указан секретный ключ API!")
+        print("Передайте --secret или задайте переменную окружения SIPUNI_SECRET")
+        print("\nПримеры:")
+        print("  python sipuni_downloader.py --user 012345 --secret mysecret --output ./recordings")
+        print("  export SIPUNI_SECRET=mysecret")
+        print("  python sipuni_downloader.py --user 012345 --output ./recordings")
+        return
     
     # Создаем директорию для вывода
     os.makedirs(args.output, exist_ok=True)
